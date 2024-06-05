@@ -1,18 +1,19 @@
 :root {
     --background-color: #121626;
-    --form-background-color: #242C48;
-    --text-color: #e2e2e2;
-    --button-color: #8f44d1;
+    --form-background-color: #1c2237;
+    --text-color: #d4d4d4;
+    --button-color: #763EDD;
     --button-hover-color: #C06C84;
 }
 
 body {
     margin: 0;
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Quicksand", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
     background-color: var(--background-color);
     color: var(--text-color);
     animation: fadeIn 0.7s forwards;
-
 }
 
 .header-container {
@@ -31,7 +32,7 @@ body {
     background-image: url(../src/logo.png);
     background-size: contain;
     padding: 0;
-    margin-left: 20px;
+    margin-left: 100px;
 }
 
 .menu {
@@ -39,7 +40,7 @@ body {
     display: flex;
     gap: 20px;
     padding: 0;
-    margin-right: 20px;
+    margin-right: 100px;
 }
 
 nav a {
@@ -47,14 +48,66 @@ nav a {
     text-decoration: none;
 }
 
+nav li {
+    display: inline-block;
+    list-style: outside none none;
+    padding: 0;
+  }
+  
+nav a {
+    padding: .5em .8em;
+    color: rgba(255,255,255,.5);
+    position: relative;
+    text-decoration: none;
+    font-size: 20px;
+  }
+  
+nav a::before,
+nav a::after {
+    content: '';
+    height: 14px;
+    width: 14px;
+    position: absolute;
+    transition: all .35s ease;
+    opacity: 0;
+  }
+  
+nav a::before {
+    content: '';
+    right: 0;
+    top: 0;
+    border-top: 3px solid var(--button-color);
+    border-right: 3px solid var(--button-color);
+    transform: translate(-100%, 50%);
+  }
+  
+nav a:after {
+    content: '';
+    left: 0;
+    bottom: 0;
+    border-bottom: 3px solid var(--button-color);
+    border-left: 3px solid var(--button-color);
+    transform: translate(100%, -50%)
+  }
+  
+nav a:hover:before,
+nav a:hover:after{
+    transform: translate(0,0);
+    opacity: 1;
+  }
+  
+nav a:hover {
+    color: var(--button-color);
+  }
+
 
 .container {
-    max-width: 600px;
-    margin: 50px auto;
+    max-width: 700px;
+    margin: 25px auto;
     padding: 20px;
     background-color: var(--background-color);
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    box-shadow: 0 0 20px rgba(36,44, 72, 1);
 }
 
 header {
@@ -91,8 +144,14 @@ nav a {
 
 .title{
     width: fit-content;
-    margin: auto;
-    padding: 10px;
+    margin: 100px auto 0 auto;
+    font-size: 24px;
+    font-weight: 500;
+}
+
+.container-title{
+    width: fit-content;
+    margin: 0 auto 25px auto;
     font-size: 24px;
     font-weight: 500;
 }
@@ -102,10 +161,11 @@ nav a {
     justify-content: space-between;
     align-items: center;
     background-color: var(--form-background-color);
-    padding: 10px;
-    border-radius: 4px;
+    padding: 12px;
+    border-radius: 0px;
     opacity: 0;
     animation: fadeIn 0.7s forwards;
+    font-size: 18px;
 }
 
 .form-group:nth-child(1) {
@@ -130,26 +190,31 @@ nav a {
     animation-delay: 0.35s;
 }
 
+.multi-inputs{
+    display: flex;
+}
+
 .input-group {
     position: relative;
-    width: 150px;
-    margin-right: 10px;
+    width: 120px;
+    margin: 0 10px;
 }
 
 .input-group input {
     width: 100%;
   }
 
+
 .input-group .unit {
     position: absolute;
     display: block;
-    top: 3px;
+    top: 8px;
     right: -3px;
     color: black;
     padding-left: 5px;
     width: 45px;
     text-align: right;
-    font-size: 18px;
+    font-size: 14px;
   }
 
 input {
@@ -159,6 +224,7 @@ input {
     border: none;
     border-radius: 4px;
     text-align: left;
+    font-size: 16px;
 }
 
 input[type=number] {
@@ -170,6 +236,7 @@ input[type=number] {
     margin: auto;
     background-color: var(--button-color);
     color: var(--text-color);
+    font-size: 18px;
     padding: 10px 20px;
     border: none;
     border-radius: 4px;
