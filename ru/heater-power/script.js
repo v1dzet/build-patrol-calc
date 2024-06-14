@@ -1,4 +1,8 @@
 import { getWaterDensity } from '../../scripts/get_water_density.js';
+import { generatePDF } from '../../scripts/generate_pdf.js';
+import { scrollToBottom, scrollToTop } from '../../scripts/scrolls.js';
+import { changeLanguage } from '../../scripts/language.js';
+
 
 const url = 'http://127.0.0.1:5500';
 
@@ -56,6 +60,8 @@ document.addEventListener("DOMContentLoaded", function() {
         event.preventDefault();
         clearInputs();
     });
+    
+    changeLanguage();
 });
 
 
@@ -141,20 +147,6 @@ function checkErrors(tnv, tpv, rv, recovery, tpt, tot){
     }
 }
 
-function scrollToBottom() {
-    window.scrollTo({
-        top: document.body.scrollHeight,
-        behavior: 'smooth'
-    });
-}
-
-function scrollToTop() {
-    window.scrollTo({
-        top: 0,
-        behavior: 'smooth'
-    });
-}
-
 function generatePDFButtonHandler() {
     const loadingOverlay = document.getElementById('pdf-loading');
     scrollToTop();
@@ -193,44 +185,14 @@ function generatePDFButtonHandler() {
     var filename = "Мощность нагревателя_buildpatrol_com_ua.pdf"
 
     setTimeout(function(){
-        generatePDF(title1, title2, input, output, footer, filename)
+        generatePDF(title1, title2, input, output, footer, filename, 30, 45, 125, 140)
         loadingOverlay.classList.remove('show');
         document.body.classList.remove('no-scroll');
     }, 2050);
 
 }
 
-function generatePDF(title1, title2, input, output, footer, filename){
-    const jsPDF = window.jspdf.jsPDF;
-    var doc = new jsPDF({orientation: "p", lineHeight: 1.5});
 
-    doc.addFont('../../fonts/times.ttf', 'times', 'normal');
-    doc.addFont('../../fonts/times_bold.ttf', 'timesBold', 'normal');
-
-    doc.setFont('timesBold', 'normal');
-    doc.setFontSize(24);
-    doc.text(title1, doc.internal.pageSize.width / 2, 30, 'center')
-
-    doc.setFont('times', 'normal');
-    doc.setFontSize(16);
-    doc.text(input, 25, 45, 'left');
-
-    doc.setFont('timesBold', 'normal');
-    doc.setFontSize(24);
-    doc.text(title2, doc.internal.pageSize.width / 2, 125, 'center')
-
-    doc.setFont('times', 'normal');
-    doc.setFontSize(16);
-    doc.text(output, 25, 140, 'left');
-
-    doc.setFontSize(12);
-    doc.text(footer, doc.internal.pageSize.width / 2, doc.internal.pageSize.height-3, 'center');
-
-    let now = new Date();
-    filename =  now.getDate() + '.' +  (now.getMonth()+1) + '.' +  now.getFullYear() + '_' + filename;
-
-    doc.save(filename);
-}
 
 function generateLink() {
     let tnv = parseFloat(document.getElementById('tnv').value) || 0;  //температура наружного воздуха
