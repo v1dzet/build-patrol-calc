@@ -1,0 +1,23 @@
+:root {
+    --background-color: #121626;
+    --form-background-color: #1c2237;
+    --text-color: #d4d4d4;
+    --button-color: #41227a;
+    --button-hover-color: #C06C84;
+    --arrow-icon: url(https://upload.wikimedia.org/wikipedia/commons/9/9d/Caret_down_font_awesome_whitevariation.svg);
+    --select-gradient: linear-gradient(to left, #1c2237 3em, #1c2237 3em);
+}
+
+body {
+    margin: 0;
+    font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    animation: fadeIn 0.7s forwards;
+}
+
+body.no-scroll {
+    overflow: hidden;
+}

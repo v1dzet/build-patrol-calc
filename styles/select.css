@@ -1,0 +1,37 @@
+.language-select{
+    width: 150px;
+    position: absolute;
+    right: 110px;
+    top: 110px;
+}
+
+select {
+    appearance: none;
+    border: 0;
+    outline: 0;
+    font: inherit;
+    width: 6rem;
+    padding: 10px;
+    background: var(--arrow-icon) no-repeat right 0.8em center / 1.4em,
+    var(--select-gradient);
+    color: var(--text-color);
+    border-radius: 0.25em;
+    box-shadow: 0 0 1em 0 rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+
+    &::-ms-expand {
+        display: none;
+        background-color: var(--select-gradient);
+    }
+
+    &:focus {
+        outline: none;
+    }
+
+}
+
+option {
+    color: black;
+    font-size: 18px;
+    background: var(--select-gradient);
+}
