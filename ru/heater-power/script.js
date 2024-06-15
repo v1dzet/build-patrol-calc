@@ -185,6 +185,26 @@ function generatePDFButtonHandler() {
     var filename = "Мощность нагревателя_buildpatrol_com_ua.pdf"
 
     setTimeout(function(){
+        WebFont.load({
+            google: {
+                families: ['Roboto:400,700']
+            },
+            active: function() {
+                // Ваш код для создания PDF после загрузки шрифта
+                generatePDF(
+                    'Пример заголовка на русском и украинском', 
+                    'Example Title in English', 
+                    'Вводные данные: Температура = 20°C\nInput Data: Temperature = 20°C', 
+                    'Результаты: Температура = 293.15K\nResults: Temperature = 293.15K', 
+                    'Footer Text: Подвал текста', 
+                    'example.pdf', 
+                    30, 
+                    50, 
+                    100, 
+                    120
+                );
+            }
+        });
         generatePDF(title1, title2, input, output, footer, filename, 30, 45, 125, 140)
         loadingOverlay.classList.remove('show');
         document.body.classList.remove('no-scroll');
