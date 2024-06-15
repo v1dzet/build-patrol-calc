@@ -118,9 +118,9 @@ function generatePDFButtonHandler() {
 
     var footer = 'Расчет выполнен на сайте buildpatrol.com.ua';
     var filename = "Теплофизические_свойства_воздуха_buildpatrol_com_ua.pdf";
+    generatePDF(title1, title2, input, output, footer, filename, 30, 45, 80, 95);
 
     setTimeout(function(){
-        generatePDF(title1, title2, input, output, footer, filename, 30, 45, 80, 95);
         loadingOverlay.classList.remove('show');
         document.body.classList.remove('no-scroll');
     }, 2050);

@@ -185,9 +185,9 @@ function generatePDFButtonHandler() {
 
     var footer = 'Calculation performed on buildpatrol.com.ua'
     var filename = "Heater_Power_buildpatrol_com_ua.pdf"
+    generatePDF(title1, title2, input, output, footer, filename, 30, 45, 125, 140)
 
     setTimeout(function(){
-        generatePDF(title1, title2, input, output, footer, filename, 30, 45, 125, 140)
         loadingOverlay.classList.remove('show');
         document.body.classList.remove('no-scroll');
     }, 2050);
