@@ -19,16 +19,17 @@
     <script type="module" src="../../scripts/scrolls.js"></script>
     <script type="module" src="../../scripts/language.js"></script>
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
-    <script src="https://code.jquery.com/jquery-2.0.2.min.js"></script>
-    <body>
-        <div class="pdf-loading" id="pdf-loading">
-            <div class="pdf-loading-container">
-                <div class="pdf-loading-text">Creating PDF</div>
-                <div class="pdf-loader"></div>
-            </div>
+    <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
+</head>
+<body>
+    <div class="pdf-loading" id="pdf-loading">
+        <div class="pdf-loading-container">
+            <div class="pdf-loading-text">Creating PDF</div>
+            <div class="pdf-loader"></div>
         </div>
-    
-        <header>
+    </div>
+
+    <header>
         <div class="header-container">
             <div class="logo"></div>
             <nav class="menu">
@@ -39,132 +40,108 @@
                 </ul>
             </nav>
         </div>
-        
     </header>
 
     <select class="language-select" id="language-select">
-        <option value="en">English</option>
         <option value="ru">Русский</option>
+        <option value="en">English</option>
         <option value="uk">Українська</option>
     </select>
 
-    <div class="title">Heater Power</div>
+    <div class="title">Thermophysical Properties of Air</div>
 
     <div class="container">
         <form class="calculation-form">
-
             <div class="form-group">
-                <label>Outdoor Air Temperature</label>
-                <div class="multi-inputs">
-                    <div class="input-group">
-                        <input type="number" value="-24" id="tnv">
-                        <span class="unit">°C</span>
-                    </div>
-                    <div class="input-group">
-                        <input disabled  id="air-density-tnv">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Prepared Air Temperature</label>
-                <div class="multi-inputs">
-                    <div class="input-group">
-                        <input type="number" value="20" id="tpv">
-                        <span class="unit">°C</span>
-                    </div>
-                    <div class="input-group">
-                        <input disabled id="air-density-tpv">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Air Flow Rate</label>
+                <label>Temperature in Celsius</label>
                 <div class="input-group">
-                    <input type="number" value="1000" id="rv">
-                    <span class="unit">m³/h</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Exhaust Air Recovery Percentage</label>
-                <div class="input-group">
-                    <input type="number" value="0" id="air_recovery">
-                    <span class="unit">%</span>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Supply Water Temperature</label>
-                <div class="input-group">
-                    <input type="number" value="80" id="tpt">
+                    <input type="number" value="0" id="t">
                     <span class="unit">°C</span>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label>Return Water Temperature</label>
-                <div class="input-group">
-                    <input type="number" value="60" id="tot">
-                    <span class="unit">°C</span>
-                </div>
-            </div>
             <div class="tools-group">
                 <div class="tool-btn clear" id="clear"></div>
             </div>
 
             <button class="calculate-btn" id="calculate-btn">Calculate</button>
-
         </form>
     </div>
 
     <div class="loader" id="results-loader"></div>
 
     <div class="container" style="display: none;" id="results-container">
-
         <div class="container-title">Calculation Results</div>
 
         <form class="calculation-form">
-
             <div class="form-group">
-                <label>Power by Mass Flow</label>
+                <label>Temperature in Kelvin</label>
                 <div class="input-group">
-                    <input disabled id="n_mass_result">
+                    <input disabled id="T_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Power by Volume Flow</label>
+                <label>Volume Density</label>
                 <div class="input-group">
-                    <input disabled id="n_space_result">
+                    <input disabled id="ro_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Heat Carrier Consumption</label>
-                <div class="multi-inputs">
-                    <div class="input-group">
-                        <input disabled id="rashod-teplonos-mass">
-                    </div>
-                    <div class="input-group" id="">
-                        <input disabled id="rashod-teplonos-space">
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-group">
-                <label>Outdoor Air Intake Flow</label>
+                <label>Dynamic Viscosity Coefficient</label>
                 <div class="input-group">
-                    <input disabled id="rashod-zabor">
+                    <input disabled id="mu_result">
                 </div>
             </div>
+
+            <div class="form-group">
+                <label>Specific Heat Capacity at Constant Pressure</label>
+                <div class="input-group">
+                    <input disabled id="Cp_result">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Thermal Conductivity Coefficient</label>
+                <div class="input-group">
+                    <input disabled id="lambda_result">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Kinematic Viscosity Coefficient</label>
+                <div class="input-group">
+                    <input disabled id="nu_result">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Volume Expansion Coefficient</label>
+                <div class="input-group">
+                    <input disabled id="beta_result">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Thermal Diffusivity Coefficient</label>
+                <div class="input-group">
+                    <input disabled id="alpha_result">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Prandtl Number</label>
+                <div class="input-group">
+                    <input disabled id="Pr_result">
+                </div>
+            </div>
+
             <div class="tools-group">
                 <div class="tool-btn link" id="link"></div>
                 <div class="tool-btn pdf" id="pdf"></div>
                 <div class="tool-btn message"></div>
             </div>
-
         </form>
     </div>
 </body>

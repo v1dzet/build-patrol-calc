@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculation Form</title>
+    <title>Форма розрахунку</title>
     <link rel="stylesheet" href="../../styles/animations.css">
     <link rel="stylesheet" href="../../styles/header.css" media="only screen and (min-width: 630px)">
     <link rel="stylesheet" href="../../styles/header_mobile.css" media="only screen and (max-width: 630px)">
@@ -12,7 +12,7 @@
     <link rel="stylesheet" href="../../styles/form_mobile.css" media="only screen and (max-width: 630px)">
     <link rel="stylesheet" href="../../styles/select.css" media="only screen and (min-width: 630px)">
     <link rel="stylesheet" href="../../styles/select_mobile.css" media="only screen and (max-width: 630px)">
-
+    
     <script type="module" src="script.js"></script>
     <script type="module" src="../../scripts/get_water_density.js"></script>
     <script type="module" src="../../scripts/generate_pdf.js"></script>
@@ -20,26 +20,26 @@
     <script type="module" src="../../scripts/language.js"></script>
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="http://code.jquery.com/jquery-2.0.2.min.js"></script>
-    <body>
-        <div class="pdf-loading" id="pdf-loading">
-            <div class="pdf-loading-container">
-                <div class="pdf-loading-text">Создание PDF</div>
-                <div class="pdf-loader"></div>
-            </div>
+</head>
+<body>
+    <div class="pdf-loading" id="pdf-loading">
+        <div class="pdf-loading-container">
+            <div class="pdf-loading-text">Створення PDF</div>
+            <div class="pdf-loader"></div>
         </div>
-    
-        <header>
+    </div>
+
+    <header>
         <div class="header-container">
             <div class="logo"></div>
             <nav class="menu">
                 <ul>
-                    <li><a href="#">Главная</a></li>
-                    <li><a href="#">Расчеты</a></li>
-                    <li><a href="#">Контакты</a></li>
+                    <li><a href="#">Головна</a></li>
+                    <li><a href="#">Розрахунки</a></li>
+                    <li><a href="#">Контакти</a></li>
                 </ul>
             </nav>
         </div>
-        
     </header>
 
     <select class="language-select" id="language-select">
@@ -48,15 +48,12 @@
         <option value="uk">Українська</option>
     </select>
 
-
-
-    <div class="title">Теплофизические свойства воздуха</div>
+    <div class="title">Теплофізичні властивості повітря</div>
 
     <div class="container">
         <form class="calculation-form">
-
             <div class="form-group">
-                <label>Температура по Цельсию</label>
+                <label>Температура за Цельсієм</label>
                 <div class="input-group">
                     <input type="number" value="0" id="t">
                     <span class="unit">°C</span>
@@ -67,70 +64,67 @@
                 <div class="tool-btn clear" id="clear"></div>
             </div>
 
-            <button class="calculate-btn" id="calculate-btn">Расчет</button>
-
+            <button class="calculate-btn" id="calculate-btn">Розрахувати</button>
         </form>
     </div>
 
     <div class="loader" id="results-loader"></div>
 
     <div class="container" style="display: none;" id="results-container">
-
-        <div class="container-title">Результаты расчетов</div>
+        <div class="container-title">Результати розрахунків</div>
 
         <form class="calculation-form">
-
             <div class="form-group">
-                <label>Температура по Кельвину</label>
+                <label>Температура за Кельвіном</label>
                 <div class="input-group">
                     <input disabled id="T_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Объемная плотность</label>
+                <label>Об'ємна щільність</label>
                 <div class="input-group">
                     <input disabled id="ro_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Динамический коэффициент вязкости</label>
+                <label>Динамічний коефіцієнт в'язкості</label>
                 <div class="input-group">
                     <input disabled id="mu_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Удельная изобарная теплоемкость</label>
+                <label>Питома ізобарна теплоємність</label>
                 <div class="input-group">
                     <input disabled id="Cp_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Коэффициент теплопроводности</label>
+                <label>Коефіцієнт теплопровідності</label>
                 <div class="input-group">
                     <input disabled id="lambda_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Кинематический коэффициент вязкости</label>
+                <label>Кінематичний коефіцієнт в'язкості</label>
                 <div class="input-group">
                     <input disabled id="nu_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Коэффициент объемного расширения</label>
+                <label>Коефіцієнт об'ємного розширення</label>
                 <div class="input-group">
                     <input disabled id="beta_result">
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Коэффициент температуропроводности</label>
+                <label>Коефіцієнт температуропровідності</label>
                 <div class="input-group">
                     <input disabled id="alpha_result">
                 </div>
@@ -148,7 +142,6 @@
                 <div class="tool-btn pdf" id="pdf"></div>
                 <div class="tool-btn message"></div>
             </div>
-
         </form>
     </div>
 </body>
