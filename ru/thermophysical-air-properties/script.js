@@ -42,6 +42,7 @@ function calculateResults() {
     if(checkErrors(t)){
         document.getElementById('results-loader').style.display = 'block';
         document.getElementById('results-container').style.display = 'none';
+        scrollToBottom();
 
 
         let T = t + 273.15;                                                                                                                            //Температура по Кельвину

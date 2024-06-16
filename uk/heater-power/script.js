@@ -84,6 +84,7 @@ function calculateResults() {
     if(checkErrors(tnv,tpv,rv,air_recovery,tpt,tot)){
         document.getElementById('results-container').style.display = 'none';
         document.getElementById('results-loader').style.display = 'block';
+        scrollToBottom();
         
         let ro_tnv = (353.089/(tnv+273.15));
         let ro_tpv = (353.089/(tpv+273.15));
