@@ -4,16 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculation Form</title>
-    <link rel="stylesheet" href="../../styles/animations.css">
-    <link rel="stylesheet" href="../../styles/header.css">
-    <link rel="stylesheet" href="../../styles/main.css">
-    <link rel="stylesheet" href="../../styles/select.css">
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/header.css" media="only screen and (min-width: 630px)">
+    <link rel="stylesheet" href="../styles/header_mobile.css" media="only screen and (max-width: 630px)">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/select.css" media="only screen and (min-width: 630px)">
+    <link rel="stylesheet" href="../styles/select_mobile.css" media="only screen and (max-width: 630px)">
     <link rel="stylesheet" href="styles.css">
-
-
-
     <script type="module" src="script.js"></script>
-    <script type="module" src="../../scripts/language.js"></script>
+    <script type="module" src="../scripts/language.js"></script>
     <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
     <script src="https://code.jquery.com/jquery-2.0.2.min.js"></script>
 
@@ -47,6 +46,80 @@
 
 
 
-    <div class="title">Мощность нагревателя</div>
+    <div class="title">Инженерные расчеты</div>
+
+    <div class="menu-container">
+        <div class="container">
+            <form class="calculation-form">
+                <div class="container-title">Аэродинамика</div>
+
+                <a href="thermophysical-air-properties/">
+                    <div class="form-group">
+                        <label>Теплофизические свойста воздуха</label>
+                    </div>
+                </a>
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Расчет скорости в сечении</label>
+                    </div>
+                </a>
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Подбор сечения</label>
+                    </div>
+                </a>
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Расчет фитингов воздуховодов</label>
+                    </div>
+                </a>
+
+            </form>
+        </div>
+
+        <div class="container">
+            <form class="calculation-form">
+                <div class="container-title">Гидравлика</div>
+
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Расчет трубопроводов</label>
+                    </div>
+                </a>
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Подбор трубопроводов</label>
+                    </div>
+                </a>
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Расчет потерь на арматуре по KVS</label>
+                    </div>
+                </a>
+
+            </form>
+        </div>
+
+        <div class="container">
+            <form class="calculation-form">
+                <div class="container-title">Тепловые расчеты</div>
+
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Мощность нагревателя</label>
+                    </div>
+                </a>
+                <a href="heater-power/">
+                    <div class="form-group">
+                        <label>Мощность охладителя</label>
+                    </div>
+                </a>
+
+
+            </form>
+        </div>
+    </div>
+
+
 </body>
 </html>

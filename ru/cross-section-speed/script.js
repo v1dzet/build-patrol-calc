@@ -4,35 +4,29 @@ import { scrollToBottom, scrollToTop } from '../../scripts/scrolls.js';
 import { changeLanguage } from '../../scripts/language.js';
 
 document.addEventListener("DOMContentLoaded", function() {
-    const inputElement1 = document.getElementById('tnv');
-    const inputElement2 = document.getElementById('tpv');
-    const outputElement1 = document.getElementById('air-density-tnv');
-    const outputElement2 = document.getElementById('air-density-tpv');
 
+    const ductTypeSelect = document.getElementById("duct-type");
 
-    inputElement1.addEventListener('input', (event) => {
-        var result = (353.089/(parseFloat(inputElement1.value)+273.15)).toFixed(3);
-
-        if(isNaN(result)){
-            outputElement1.value = "ρ воздуха";
+    ductTypeSelect.addEventListener("change", function() {
+        const b = document.getElementById("b_label");
+        const h = document.getElementById("h_label");
+        const hGroup = document.getElementById("h_group");
+        if(ductTypeSelect.value === "circle"){
+            b.textContent = "Диаметр";
+            hGroup.style.display = "none";
         }
-        else{
-            outputElement1.value = `ρ = ${result} кг/м3`;
+        if(ductTypeSelect.value === "rectangle"){
+            b.textContent = "Ширина";
+            h.textContent = "Высота";
+            hGroup.style.display = "flex";
+        }
+        if(ductTypeSelect.value === "oval") {
+            b.textContent = "Большая ось";
+            h.textContent = "Малая ось";
+            hGroup.style.display = "flex";
         }
 
     });
-
-    inputElement2.addEventListener('input', (event) => {
-        var result = (353.089/(parseFloat(inputElement2.value)+273.15)).toFixed(3);
-
-        if(isNaN(result)){
-            outputElement2.value = "ρ воздуха";
-        }
-        else{
-            outputElement2.value = `ρ = ${result} кг/м3`;
-        }
-    });
-
 
     const calculateBtn = document.getElementById("calculate-btn");
     calculateBtn.addEventListener("click", function(event) {
@@ -63,55 +57,114 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function calculateResults() {
+    //--КОНСТАНТЫ-----------------------------------------------------
+    const PI = Math.PI;
+    const G = 9.81;
+    const ATMOSPHERIC_PRESSURE = 101325;
+    const GAS_CONSTANT = 287.4;
+    //----------------------------------------------------------------
 
-    const c = 1/3600;   // коэфициент для расчета
+    //--ВВОДНЫЕ ДАННЫЕ-------------------------------------------------------------------
+    const airFlowRate = parseFloat(document.getElementById('rv').value); // расход воздуха
+    const maxVelocity = parseFloat(document.getElementById('v_max').value); // максимальная скорость
+    const airTemperature = parseFloat(document.getElementById('t').value); // температура воздуха
+    const ductType = document.getElementById('duct-type').value; // тип воздуховода
+    const ductMaterial = document.getElementById('duct-material').value; // материал воздуховода
+    const width = parseFloat(document.getElementById('b').value) / 1000; // ширина (в метрах)
+    const height = parseFloat(document.getElementById('h').value) / 1000; // высота (в метрах)
+    //----------------------------------------------------------------------------------
 
-    let tnv = parseFloat(document.getElementById('tnv').value) || 0;  //температура наружного воздуха
-    let tpv = parseFloat(document.getElementById('tpv').value) || 0;  //температура подготовленног овоздуха
-    let rv = parseFloat(document.getElementById('rv').value) || 0;    //расход воздуха
-    let air_recovery = parseFloat(document.getElementById('air_recovery').value) || 0;    //Процент рекуперации вытяжного воздуха
-    let tpt = parseFloat(document.getElementById('tpt').value) || 0;    //"Температура подачи теплоносителя
-    let tot = parseFloat(document.getElementById('tot').value) || 0;    //Температура обратки теплоносителя
+    //--ОСНОВНЫЕ ВСПОМОГАТЕЛЬНЫЕ ПЕРЕМЕННЫЕ---------------------------------------------
+    const airDensity = getWaterDensity(airTemperature); // плотность воздуха
+    let equivalentDiameter = 0; // эквивалентный диаметр
+    let crossSectionArea = 0; // площадь сечения
+    let airVelocity = 0; // скорость воздуха
+    //----------------------------------------------------------------------------------
 
-    localStorage.setItem('heater-power-tnv', tnv);
-    localStorage.setItem('heater-power-tpv', tpv);
-    localStorage.setItem('heater-power-rv', rv);
-    localStorage.setItem('heater-power-air-recovery', air_recovery);
-    localStorage.setItem('heater-power-tpt', tpt);
-    localStorage.setItem('heater-power-tot', tot);
+    //--ВСПОМОГАТЕЛЬНЫЕ ПЕРЕМЕННЫЕ ДЛЯ РАСЧЕТА УДЕЛЬНОГО ГИДРАВЛИЧЕСКОГО СОПРОТИВЛЕНИЯ----
+    let dynamicViscosity = 0; // динамическая вязкость воздуха
+    let kinematicViscosity = 0; // кинематическая вязкость воздуха
+    let dynamicPressure = 0; // динамическое давление
+    let reynoldsNumber = 0; // критерий Рейнольдса
+    let roughness = 0; // шероховатость
+    let frictionFactor = 0; // коэффициент гидравлического сопротивления
+    //-----------------------------------------------------------------------------------
 
-    if(checkErrors(tnv,tpv,rv,air_recovery,tpt,tot)){
-        document.getElementById('results-container').style.display = 'none';
-        document.getElementById('results-loader').style.display = 'block';
-        scrollToBottom();
-        
-        let ro_tnv = (353.089/(tnv+273.15));
-        let ro_tpv = (353.089/(tpv+273.15));
-        let ro_v_p =  getWaterDensity(tpt);
-        let ro_v_o = getWaterDensity(tot);
+    //---ВЫБОР МАТЕРИАЛА----------------------------------------------------------
+    roughness = getRoughness(ductMaterial);
+    //----------------------------------------------------------------------------
 
-        let n_mass = rv * c * ro_tnv * (tpv - tnv)*(1-(air_recovery/100));
-        let n_space = rv * c * ro_tpv * (tpv - tnv)*(1-(air_recovery/100));
-        let rashod_teplonos_mass = n_space*860.421/(tpt-tot);
-        let rashod_teplono_space = (rashod_teplonos_mass/((ro_v_p+ro_v_o)/2))/1000;
-        let rashod_zabor = rv * ro_tpv/ro_tnv;
+    //---ВЫЧИСЛЕНИЕ ПЛОЩАДИ СЕЧЕНИЯ И ЭКВИВАЛЕНТНОГО ДИАМЕТРА-----------------------
+    crossSectionArea = calculateCrossSectionArea(ductType, width, height);
+    equivalentDiameter = calculateEquivalentDiameter(ductType, width, height);
+    //----------------------------------------------------------------------------
 
-        document.getElementById('n_mass_result').value = n_mass.toFixed(3) + ' кВТ';
-        document.getElementById('n_space_result').value = n_space.toFixed(3) + ' кВТ';
-        document.getElementById('rashod-teplonos-mass').value = rashod_teplonos_mass.toFixed(3) + ' кг/ч';
-        document.getElementById('rashod-teplonos-space').value = rashod_teplono_space.toFixed(3) + ' м3/ч';
-        document.getElementById('rashod-zabor').value = rashod_zabor.toFixed() + ' м3/ч';
-        setTimeout(function(){
-            document.getElementById('results-loader').style.display = 'none';
-            document.getElementById('results-container').style.display = 'block';
-            scrollToBottom();
-        }, 1000)
+    airVelocity = airFlowRate / (crossSectionArea * 3600);
 
-    }
+    //--ПРОМЕЖУТОЧНЫЕ РАСЧЕТЫ ДЛЯ ОТВЕТА------------------------------------------
+    dynamicViscosity = 1.717 * Math.pow(10, -5) * Math.pow((273 + airTemperature) / 273, 0.683);
+    kinematicViscosity = dynamicViscosity / airDensity;
+    dynamicPressure = (airDensity * Math.pow(airVelocity, 2)) / 2;
+    reynoldsNumber = (airVelocity * equivalentDiameter) / kinematicViscosity;
+    frictionFactor = 0.11 * Math.pow((roughness / 1000) / equivalentDiameter + 68 / reynoldsNumber, 0.25);
+    const specificHydraulicResistance = (frictionFactor / equivalentDiameter) * dynamicPressure;
+    //----------------------------------------------------------------------------
 
+    //-----ВЫВОД РЕЗУЛЬТАТОВ-----------------------------------------------------
+    displayResults(crossSectionArea, equivalentDiameter, airVelocity, specificHydraulicResistance, maxVelocity);
+    //----------------------------------------------------------------------------
 }
 
-function checkErrors(tnv, tpv, rv, recovery, tpt, tot){
+function getRoughness(material) {
+    switch (material) {
+        case 'steel': return 0.1; // сталь
+        case 'brick': return 4; // кирпич
+        case 'slabs': return 1.5; // шлакобетонные плиты
+        case 'plaster': return 10; // штукатурка по мет. сетке
+        default: return 0.1; // значение по умолчанию (сталь)
+    }
+}
+
+function calculateCrossSectionArea(type, width, height) {
+    const PI = Math.PI;
+    switch (type) {
+        case 'circle': return (PI * Math.pow(width, 2)) / 4; // круглое сечение
+        case 'rectangle': return width * height; // прямоугольное сечение
+        case 'oval': return ((PI * Math.pow(height, 2)) / 4) + (height * (width - height)); // плоскоовальное сечение
+        default: return 0;
+    }
+}
+
+function calculateEquivalentDiameter(type, width, height) {
+    switch (type) {
+        case 'circle': return width; // круглое сечение
+        case 'rectangle':
+        case 'oval': return (2 * width * height) / (width + height); // прямоугольное и плоскоовальное сечение
+        default: return 0;
+    }
+}
+
+function displayResults(area, diameter, velocity, resistance, maxVelocity) {
+    document.getElementById('v_result').style.color = "black";
+
+
+    document.getElementById('s_result').value = `${area.toFixed(7)} м²`;
+    document.getElementById('d_result').value = `${diameter.toFixed(3)} м`;
+    document.getElementById('v_result').value = `${velocity.toFixed(2)} м/с`;
+    document.getElementById('resist_result').value = `${resistance.toFixed(2)} Па/м`;
+
+    if (velocity > maxVelocity) {
+        document.getElementById('v_result').style.color = "red";
+    }
+
+    setTimeout(function(){
+        document.getElementById('results-loader').style.display = 'none';
+        document.getElementById('results-container').style.display = 'block';
+        scrollToBottom();
+    },1000);
+}
+
+    function checkErrors(tnv, tpv, rv, recovery, tpt, tot){
     if(tnv >= tpv){
         window.alert("Температура наружного воздуха не может превышать температуру наружного");
         return false;

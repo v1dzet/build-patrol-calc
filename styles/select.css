@@ -5,6 +5,14 @@
     top: 110px;
 }
 
+.default-select{
+    width: 150px;
+    font-size: 16px;
+    background: no-repeat right 0.8em center / 1.4em, var(--text-color);
+    color: black;
+    text-align: center;
+}
+
 select {
     appearance: none;
     border: 0;

@@ -72,7 +72,3 @@ a{
     text-decoration: none;
     color: var(--text-color);
 }
-
-.logo {
-    background-image: url(../src/logo.png);
-}

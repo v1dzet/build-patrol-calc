@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Форма розрахунків</title>
+    <link rel="stylesheet" href="../styles/animations.css">
+    <link rel="stylesheet" href="../styles/header.css" media="only screen and (min-width: 630px)">
+    <link rel="stylesheet" href="../styles/header_mobile.css" media="only screen and (max-width: 630px)">
+    <link rel="stylesheet" href="../styles/main.css">
+    <link rel="stylesheet" href="../styles/select.css" media="only screen and (min-width: 630px)">
+    <link rel="stylesheet" href="../styles/select_mobile.css" media="only screen and (max-width: 630px)">
+    <link rel="stylesheet" href="styles.css">
+    <script type="module" src="script.js"></script>
+    <script type="module" src="../scripts/language.js"></script>
+    <script type="module" src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-2.0.2.min.js"></script>
+</head>
+<body>
+<div class="pdf-loading" id="pdf-loading">
+    <div class="pdf-loading-container">
+        <div class="pdf-loading-text">Створення PDF</div>
+        <div class="pdf-loader"></div>
+    </div>
+</div>
+
+<header>
+    <div class="header-container">
+        <div class="logo"></div>
+        <nav class="menu">
+            <ul>
+                <li><a href="#">Головна</a></li>
+                <li><a href="#">Розрахунки</a></li>
+                <li><a href="#">Контакти</a></li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<select class="language-select" id="language-select">
+    <option value="ru">Російська</option>
+    <option value="en">Англійська</option>
+    <option value="uk">Українська</option>
+</select>
+
+<div class="title">Інженерні розрахунки</div>
+
+<div class="menu-container">
+    <div class="container">
+        <form class="calculation-form">
+            <div class="container-title">Аеродинаміка</div>
+
+            <a href="thermophysical-air-properties/">
+                <div class="form-group">
+                    <label>Теплофізичні властивості повітря</label>
+                </div>
+            </a>
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Розрахунок швидкості в перетині</label>
+                </div>
+            </a>
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Підбір перетину</label>
+                </div>
+            </a>
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Розрахунок фітингів повітроводів</label>
+                </div>
+            </a>
+        </form>
+    </div>
+
+    <div class="container">
+        <form class="calculation-form">
+            <div class="container-title">Гідравліка</div>
+
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Розрахунок трубопроводів</label>
+                </div>
+            </a>
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Підбір трубопроводів</label>
+                </div>
+            </a>
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Розрахунок втрат на арматурі за KVS</label>
+                </div>
+            </a>
+        </form>
+    </div>
+
+    <div class="container">
+        <form class="calculation-form">
+            <div class="container-title">Теплові розрахунки</div>
+
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Потужність нагрівача</label>
+                </div>
+            </a>
+            <a href="heater-power/">
+                <div class="form-group">
+                    <label>Потужність охолоджувача</label>
+                </div>
+            </a>
+        </form>
+    </div>
+</div>
+</body>
+</html>

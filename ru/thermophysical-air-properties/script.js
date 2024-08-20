@@ -1,4 +1,3 @@
-import { getWaterDensity } from '../../scripts/get_water_density.js';
 import { generatePDF } from '../../scripts/generate_pdf.js';
 import { scrollToBottom, scrollToTop } from '../../scripts/scrolls.js';
 import { changeLanguage } from '../../scripts/language.js';
