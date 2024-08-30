@@ -76,12 +76,7 @@ function calculateResults() {
     let tpt = parseFloat(document.getElementById('tpt').value) || 0;    //supply water temperature
     let tot = parseFloat(document.getElementById('tot').value) || 0;    //return water temperature
 
-    localStorage.setItem('heater-power-tnv', tnv);
-    localStorage.setItem('heater-power-tpv', tpv);
-    localStorage.setItem('heater-power-rv', rv);
-    localStorage.setItem('heater-power-air-recovery', air_recovery);
-    localStorage.setItem('heater-power-tpt', tpt);
-    localStorage.setItem('heater-power-tot', tot);
+    saveValues(tnv, tpv, rv, air_recovery, tpt, tot);
 
     if(checkErrors(tnv,tpv,rv,air_recovery,tpt,tot)){
         document.getElementById('results-container').style.display = 'none';
@@ -272,6 +267,15 @@ function updateAddInputs(){
         outputElement2.value = `ρ = ${result} kg/m3`;
     }
 }
+function saveValues(tnv, tpv, rv, air_recovery, tpt, tot){
+    localStorage.setItem('heater-power-tnv', tnv);
+    localStorage.setItem('heater-power-tpv', tpv);
+    localStorage.setItem('heater-power-rv', rv);
+    localStorage.setItem('heater-power-air-recovery', air_recovery);
+    localStorage.setItem('heater-power-tpt', tpt);
+    localStorage.setItem('heater-power-tot', tot);
+}
+
 
 function loadValues(){
     document.getElementById('tnv').value = localStorage.getItem('heater-power-tnv');

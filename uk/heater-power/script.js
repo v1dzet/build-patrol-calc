@@ -71,12 +71,7 @@ function calculateResults() {
     let tpt = parseFloat(document.getElementById('tpt').value) || 0;    //температура подачі теплоносія
     let tot = parseFloat(document.getElementById('tot').value) || 0;    //температура зворотного теплоносія
 
-    localStorage.setItem('heater-power-tnv', tnv);
-    localStorage.setItem('heater-power-tpv', tpv);
-    localStorage.setItem('heater-power-rv', rv);
-    localStorage.setItem('heater-power-air-recovery', air_recovery);
-    localStorage.setItem('heater-power-tpt', tpt);
-    localStorage.setItem('heater-power-tot', tot);
+    saveValues(tnv, tpv, rv, air_recovery, tpt, tot);
 
     if(checkErrors(tnv,tpv,rv,air_recovery,tpt,tot)){
         document.getElementById('results-container').style.display = 'none';
@@ -275,6 +270,15 @@ function loadValues(){
     document.getElementById('air_recovery').value = localStorage.getItem('heater-power-air-recovery');
     document.getElementById('tpt').value = localStorage.getItem('heater-power-tpt');
     document.getElementById('tot').value = localStorage.getItem('heater-power-tot');
+}
+
+function saveValues(tnv, tpv, rv, air_recovery, tpt, tot){
+    localStorage.setItem('heater-power-tnv', tnv);
+    localStorage.setItem('heater-power-tpv', tpv);
+    localStorage.setItem('heater-power-rv', rv);
+    localStorage.setItem('heater-power-air-recovery', air_recovery);
+    localStorage.setItem('heater-power-tpt', tpt);
+    localStorage.setItem('heater-power-tot', tot);
 }
 
 function clearInputs(){

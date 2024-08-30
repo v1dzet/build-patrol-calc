@@ -1,6 +1,7 @@
 import { generatePDF } from '../../scripts/generate_pdf.js';
 import { scrollToBottom, scrollToTop } from '../../scripts/scrolls.js';
 import { changeLanguage } from '../../scripts/language.js';
+import { getAirDensity} from "../../scripts/get_air_density.js";
 
 
 const url = 'https://127.0.0.1:5500';
@@ -45,7 +46,7 @@ function calculateResults() {
 
 
         let T = t + 273.15;                                                                                                                            //Температура по Кельвину
-        let ro = (353.089 / T);                                                                                                                        //Объемная плотность
+        let ro = getAirDensity(t);                                                                                                                    //Объемная плотность
         let mu = ((17.1625 + (0.0482102*t)+((-2.17419/100000)*Math.pow(t,2))+((7.06065/1000000000)*Math.pow(t,3)))/1000000);                           //Динамический коэффициент вязкости
         let Cp = ((1.00564*1000)+(7.43322/1000*t)+(5.78429/10000*Math.pow(t,2))+(5.87508/10000000*Math.pow(t,3))+(1.81359/10000000000*Math.pow(t,4))); //Удельная изобарная теплоемкость
         let lambda = (((2.41822)+(7.32841/1000*t)+(-2.53698/1000000*Math.pow(t,2))+(9.34274/10000000000*Math.pow(t,3)))/100);                          //Коэффициент теплопроводности

@@ -2,6 +2,7 @@ import { getWaterDensity } from '../../scripts/get_water_density.js';
 import { generatePDF } from '../../scripts/generate_pdf.js';
 import { scrollToBottom, scrollToTop } from '../../scripts/scrolls.js';
 import { changeLanguage } from '../../scripts/language.js';
+import {getAirDensity} from "../../scripts/get_air_density.js";
 
 document.addEventListener("DOMContentLoaded", function() {
 
@@ -57,6 +58,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function calculateResults() {
+    document.getElementById('results-container').style.display = 'none';
+    document.getElementById('results-loader').style.display = 'block';
+    scrollToBottom();
     //--КОНСТАНТЫ-----------------------------------------------------
     const PI = Math.PI;
     const G = 9.81;
@@ -74,8 +78,10 @@ function calculateResults() {
     const height = parseFloat(document.getElementById('h').value) / 1000; // высота (в метрах)
     //----------------------------------------------------------------------------------
 
+    saveValues(airFlowRate, maxVelocity, airTemperature, width*1000, height*1000, ductType, ductMaterial);
+
     //--ОСНОВНЫЕ ВСПОМОГАТЕЛЬНЫЕ ПЕРЕМЕННЫЕ---------------------------------------------
-    const airDensity = getWaterDensity(airTemperature); // плотность воздуха
+    const airDensity = getAirDensity(airTemperature); // плотность воздуха
     let equivalentDiameter = 0; // эквивалентный диаметр
     let crossSectionArea = 0; // площадь сечения
     let airVelocity = 0; // скорость воздуха
@@ -115,7 +121,7 @@ function calculateResults() {
     //----------------------------------------------------------------------------
 }
 
-function getRoughness(material) {
+function getRoughness(material) {       //ПОЛУЧЕНИЕ ШЕРАХОВАТОСТИ ПО МАТЕРИАЛУ
     switch (material) {
         case 'steel': return 0.1; // сталь
         case 'brick': return 4; // кирпич
@@ -125,7 +131,7 @@ function getRoughness(material) {
     }
 }
 
-function calculateCrossSectionArea(type, width, height) {
+function calculateCrossSectionArea(type, width, height) {           //РАСЧЕТ ПЛОЩАДИ В ЗАВИСИМОСТИ ОТ ТИПА СЕЧЕНИЯ
     const PI = Math.PI;
     switch (type) {
         case 'circle': return (PI * Math.pow(width, 2)) / 4; // круглое сечение
@@ -146,6 +152,7 @@ function calculateEquivalentDiameter(type, width, height) {
 
 function displayResults(area, diameter, velocity, resistance, maxVelocity) {
     document.getElementById('v_result').style.color = "black";
+    document.getElementById('v_result_label').style.color = "#d4d4d4";
 
 
     document.getElementById('s_result').value = `${area.toFixed(7)} м²`;
@@ -154,7 +161,8 @@ function displayResults(area, diameter, velocity, resistance, maxVelocity) {
     document.getElementById('resist_result').value = `${resistance.toFixed(2)} Па/м`;
 
     if (velocity > maxVelocity) {
-        document.getElementById('v_result').style.color = "red";
+        document.getElementById('v_result').style.color = "#b80c00";
+        document.getElementById('v_result_label').style.color = "#b80c00";
     }
 
     setTimeout(function(){
@@ -205,35 +213,57 @@ function generatePDFButtonHandler() {
     document.body.classList.add('no-scroll');
 
 
-    let tnv = parseFloat(document.getElementById('tnv').value) || 0;  //температура наружного воздуха
-    let tpv = parseFloat(document.getElementById('tpv').value) || 0;  //температура подготовленног овоздуха
-    let rv = parseFloat(document.getElementById('rv').value) || 0;    //расход воздуха
-    let air_recovery = parseFloat(document.getElementById('air_recovery').value) || 0;    //Процент рекуперации вытяжного воздуха
-    let tpt = parseFloat(document.getElementById('tpt').value) || 0;    //"Температура подачи теплоносителя
-    let tot = parseFloat(document.getElementById('tot').value) || 0;    //Температура обратки теплоносителя
-    let n_mass = parseFloat(document.getElementById('n_mass_result').value) || 0;
-    let n_space = parseFloat(document.getElementById('n_space_result').value) || 0;
-    let rashod_teplonos_mass = parseFloat(document.getElementById('rashod-teplonos-mass').value) || 0;;
-    let rashod_teplono_space = parseFloat(document.getElementById('rashod-teplonos-space').value) || 0;
-    let rashod_zabor = parseFloat(document.getElementById('rashod-zabor').value) || 0;
+    const airFlowRate = parseFloat(document.getElementById('rv').value); // расход воздуха
+    const maxVelocity = parseFloat(document.getElementById('v_max').value); // максимальная скорость
+    const airTemperature = parseFloat(document.getElementById('t').value); // температура воздуха
+    const ductType = document.getElementById('duct-type').options[document.getElementById('duct-material').selectedIndex].text; // тип воздуховода
+    const ductMaterial = document.getElementById('duct-material').options[document.getElementById('duct-material').selectedIndex].text; // материал воздуховода
+    const width = parseFloat(document.getElementById('b').value); // ширина (в метрах)
+    const height = parseFloat(document.getElementById('h').value); // высота (в метрах)
+    const v_result = parseFloat(document.getElementById('v_result').value); // Скорость в сечении
+    const s_result = parseFloat(document.getElementById('s_result').value); // Площадь сечения
+    const d_result = parseFloat(document.getElementById('d_result').value); // Эквивалентный диаметр
+    const resist_result = parseFloat(document.getElementById('resist_result').value); //Удельное гидравлическое сопротивления
 
-    var title1 = 'Расчет мощности нагревателя';
+
+    var title1 = 'Расчет скорости в сечении';
     var title2 = 'Результаты расчетов';
 
-    var input = `Температура наружного воздуха: ${tnv} °С\n` +
-        `Температура подготовленного воздуха: ${tpv} °С\n` +
-        `Расход воздуха: ${rv} м3/ч\n` +
-        `Процент рекуперации вытяжного воздуха: ${air_recovery} %\n` +
-        `Температура подачи теплоносителя: ${tpt} °С\n` +
-        `Температура обратки теплоносителя: ${tot} °С\n`
+    if(document.getElementById('duct-type').value === 'circle'){
+        var input = `Тип воздуховода: ${ductType}\n` +
+            `Материал воздуховода: ${ductMaterial}\n` +
+            `Расход воздуха: ${airFlowRate} м3/ч\n` +
+            `Диаметр: ${width} мм\n` +
+            `Максимальная скорость: ${maxVelocity} м/с\n` +
+            `Температура воздуха: ${airTemperature} °С\n`
+    }
+    else if(document.getElementById('duct-type').value === 'rectangle'){
+        var input = `Тип воздуховода: ${ductType}\n` +
+            `Материал воздуховода: ${ductMaterial}\n` +
+            `Расход воздуха: ${airFlowRate} м3/ч\n` +
+            `Ширина: ${width} мм\n` +
+            `Высота: ${height} мм\n` +
+            `Максимальная скорость: ${maxVelocity} м/с\n` +
+            `Температура воздуха: ${airTemperature} °С\n`
+    }
+    else{
+        var input = `Тип воздуховода: ${ductType}\n` +
+            `Материал воздуховода: ${ductMaterial}\n` +
+            `Расход воздуха: ${airFlowRate} м3/ч\n` +
+            `Большая ось: ${width} мм\n` +
+            `Малая ось: ${height} мм\n` +
+            `Максимальная скорость: ${maxVelocity} м/с\n` +
+            `Температура воздуха: ${airTemperature} °С\n`
+    }
 
-    var output = `Мощность по массовому расходу: ${n_mass} кВт\n` +
-        `Мощность по объемному расходу: ${n_space} кВТ\n` +
-        `Расход теплоносителя: ${rashod_teplonos_mass} кг/ч   |    ${rashod_teplono_space} м3/ч\n` +
-        `Расход заборного наружного воздуха: ${rashod_zabor} м3/ч\n`
+
+    var output = `Скорость в сечении: ${v_result} м/с\n` +
+        `Площадь сечения: ${s_result} м2\n` +
+        `Эквивалентный диаметр: ${d_result} м\n` +
+        `Удельное гидравлическое сопротивление: ${resist_result} Па/м\n`
 
     var footer = 'Расчет выполнен на сайте buildpatrol.com.ua'
-    var filename = "Мощность нагревателя_buildpatrol_com_ua.pdf"
+    var filename = "Скорость в сечении_buildpatrol_com_ua.pdf"
 
     setTimeout(function(){
         generatePDF(title1, title2, input, output, footer, filename, 30, 45, 125, 140)
@@ -246,18 +276,19 @@ function generatePDFButtonHandler() {
 
 
 function generateLink() {
-    let tnv = parseFloat(document.getElementById('tnv').value) || 0;  //температура наружного воздуха
-    let tpv = parseFloat(document.getElementById('tpv').value) || 0;  //температура подготовленног овоздуха
-    let rv = parseFloat(document.getElementById('rv').value) || 0;    //расход воздуха
-    let air_recovery = parseFloat(document.getElementById('air_recovery').value) || 0;    //Процент рекуперации вытяжного воздуха
-    let tpt = parseFloat(document.getElementById('tpt').value) || 0;    //Температура подачи теплоносителя
-    let tot = parseFloat(document.getElementById('tot').value) || 0;    //Температура обратки теплоносителя
+    const airFlowRate = parseFloat(document.getElementById('rv').value); // расход воздуха
+    const maxVelocity = parseFloat(document.getElementById('v_max').value); // максимальная скорость
+    const airTemperature = parseFloat(document.getElementById('t').value); // температура воздуха
+    const ductType = document.getElementById('duct-type').value; // тип воздуховода
+    const ductMaterial = document.getElementById('duct-material').value; // материал воздуховода
+    const width = parseFloat(document.getElementById('b').value); // ширина (в метрах)
+    const height = parseFloat(document.getElementById('h').value); // высота (в метрах)
 
-    let link_value = `${tnv}&${tpv}&${rv}&${air_recovery}&${tpt}&${tot}`;
+    let link_value = `${airFlowRate}&${maxVelocity}&${airTemperature}&${ductType}&${ductMaterial}&${width}&${height}`;
     let encoded_link_value = window.btoa(link_value);
     encoded_link_value = encoded_link_value.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 
-    const currentUrl = window.location.origin + '/ru/heater-power/';
+    const currentUrl = window.location.origin + '/ru/cross-section-speed';
 
     let link = currentUrl + '#' + encoded_link_value;
     console.log(link_value);
@@ -287,67 +318,54 @@ function checkLink() {
             decoded_input = window.atob(decoded_input);
             decoded_input = decoded_input.split('&');
 
-            if (decoded_input.length === 6) {
-                document.getElementById('tnv').value = decoded_input[0];
-                document.getElementById('tpv').value = decoded_input[1];
-                document.getElementById('rv').value = decoded_input[2];
-                document.getElementById('air_recovery').value = decoded_input[3];
-                document.getElementById('tpt').value = decoded_input[4];
-                document.getElementById('tot').value = decoded_input[5];
+            if (decoded_input.length === 7) {
+                document.getElementById('rv').value = decoded_input[0];
+                document.getElementById('v_max').value = decoded_input[1];
+                document.getElementById('t').value = decoded_input[2];
+                document.getElementById('duct-type').value = decoded_input[3];
+                document.getElementById('duct-material').value = decoded_input[4];
+                document.getElementById('b').value = decoded_input[5];
+                document.getElementById('h').value = decoded_input[6];
 
                 calculateResults();
             }
 
-            history.pushState({}, '', window.location.origin + '/ru/heater-power/');
+            history.pushState({}, '', window.location.origin + '/ru/cross-section-speed/');
         } catch (error) {
             console.error('Error decoding the input:', error);
         }
     }
 }
 
-function updateAddInputs(){
-    const inputElement1 = document.getElementById('tnv');
-    const inputElement2 = document.getElementById('tpv');
-    const outputElement1 = document.getElementById('air-density-tnv');
-    const outputElement2 = document.getElementById('air-density-tpv');
-    var result = (353.089/(parseFloat(inputElement1.value)+273.15)).toFixed(3);
-    if(isNaN(result)){
-        outputElement1.value = "ρ воздуха";
-    }
-    else{
-        outputElement1.value = `ρ = ${result} кг/м3`;
-    }
-
-    result = (353.089/(parseFloat(inputElement2.value)+273.15)).toFixed(3);
-    if(isNaN(result)){
-        outputElement2.value = "ρ воздуха";
-    }
-    else{
-        outputElement2.value = `ρ = ${result} кг/м3`;
-    }
+function saveValues(rv, v_max, t, b, h, duct_type, duct_material){
+    localStorage.setItem('cross-section-rv', rv);
+    localStorage.setItem('cross-section-v_max', v_max);
+    localStorage.setItem('cross-section-t', t);
+    localStorage.setItem('cross-section-b', b);
+    localStorage.setItem('cross-section-h', h);
+    localStorage.setItem('cross-section-duct-type', duct_type);
+    localStorage.setItem('cross-section-duct-material', duct_material);
 }
 
 function loadValues(){
-    document.getElementById('tnv').value = localStorage.getItem('heater-power-tnv');
-    document.getElementById('tpv').value = localStorage.getItem('heater-power-tpv');
-    document.getElementById('rv').value = localStorage.getItem('heater-power-rv');
-    document.getElementById('air_recovery').value = localStorage.getItem('heater-power-air-recovery');
-    document.getElementById('tpt').value = localStorage.getItem('heater-power-tpt');
-    document.getElementById('tot').value = localStorage.getItem('heater-power-tot');
+    document.getElementById('rv').value = localStorage.getItem('cross-section-rv');
+    document.getElementById('v_max').value = localStorage.getItem('cross-section-v_max');
+    document.getElementById('t').value = localStorage.getItem('cross-section-t');
+    document.getElementById('b').value = localStorage.getItem('cross-section-b');
+    document.getElementById('h').value = localStorage.getItem('cross-section-h');
+    document.getElementById('duct-type').value = localStorage.getItem('cross-section-duct-type');
+    document.getElementById('duct-material').value = localStorage.getItem('cross-section-duct-material');
 }
 
 function clearInputs(){
-    document.getElementById('tnv').value = '';
-    document.getElementById('tpv').value = '';
     document.getElementById('rv').value = '';
-    document.getElementById('air_recovery').value = '';
-    document.getElementById('tpt').value = '';
-    document.getElementById('tot').value = '';
-    updateAddInputs();
+    document.getElementById('v_max').value = '';
+    document.getElementById('t').value = '';
+    document.getElementById('b').value = '';
+    document.getElementById('h').value = '';
 }
 
 window.onload = function() {
     loadValues();
     checkLink();
-    updateAddInputs();
 }
