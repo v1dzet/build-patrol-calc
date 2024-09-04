@@ -197,7 +197,7 @@ function generateLink() {
     const currentUrl = window.location.origin + '/uk/heater-power/';
 
     let link = currentUrl + '#' + encoded_link_value;
-    console.log(link_value);
+    
     navigator.clipboard.writeText(link).then(function () {
         document.getElementById('link').style.backgroundImage = 'url("../../src/checkmark.png")';
         setTimeout(function() {

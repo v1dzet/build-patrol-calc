@@ -216,7 +216,7 @@ function generatePDFButtonHandler() {
     const airFlowRate = parseFloat(document.getElementById('rv').value); // расход воздуха
     const maxVelocity = parseFloat(document.getElementById('v_max').value); // максимальная скорость
     const airTemperature = parseFloat(document.getElementById('t').value); // температура воздуха
-    const ductType = document.getElementById('duct-type').options[document.getElementById('duct-material').selectedIndex].text; // тип воздуховода
+    const ductType = document.getElementById('duct-type').options[document.getElementById('duct-type').selectedIndex].text; // тип воздуховода
     const ductMaterial = document.getElementById('duct-material').options[document.getElementById('duct-material').selectedIndex].text; // материал воздуховода
     const width = parseFloat(document.getElementById('b').value); // ширина (в метрах)
     const height = parseFloat(document.getElementById('h').value); // высота (в метрах)
@@ -291,7 +291,7 @@ function generateLink() {
     const currentUrl = window.location.origin + '/ru/cross-section-speed';
 
     let link = currentUrl + '#' + encoded_link_value;
-    console.log(link_value);
+    
     navigator.clipboard.writeText(link).then(function () {
         document.getElementById('link').style.backgroundImage = 'url("../../src/checkmark.png")';
         setTimeout(function() {
